@@ -25,20 +25,29 @@ namespace csTest
 			Period = period;
 		}
 
-		public bool Start() {
+		public bool Start()
+		{
+		    Console.WriteLine("starting pwm");
 			if (_working) {
 				return false;
 			}
-			if (_pinObject != null) {
-				if (_pinObject.Pin != Pin) {
-					if (!_pinObject.IsDisposed) {
-						_pinObject.Dispose ();
-					}
-					_pinObject = new GPIOFile (Pin);
-				}
-			}
+		    if (_pinObject != null)
+		    {
+		        if (_pinObject.Pin != Pin)
+		        {
+		            if (!_pinObject.IsDisposed)
+		            {
+		                _pinObject.Dispose();
+		            }
+		            _pinObject = new GPIOFile(Pin, GPIODirection.Out);
+		        }
+		    }
+		    else
+		    {
+		        _pinObject = new GPIOFile(Pin, GPIODirection.Out);
+		    }
 
-			_working = true;
+		    _working = true;
 			new Thread (LoopMethod).Start();
 			return true;
 		}
@@ -46,13 +55,12 @@ namespace csTest
 		public void Stop() {
 			if (_working) {
 				_working = false;
-
 			}
 		}
 
 		public void LoopMethod() {
 			int lowDuration = LowDuration;
-
+		    Console.WriteLine("pwm started with " +HighDuration +"/" + Period+ "   on pin:" + _pinObject.Pin);
 			while (_working) {
 				SetPinState (true);
 				Thread.Sleep (HighDuration);
@@ -60,6 +68,7 @@ namespace csTest
 				Thread.Sleep (lowDuration);
 			}
 			SetPinState (DefaultValue);
+		    Console.WriteLine("Pwm end on pin: " + _pinObject.Pin);
 		}
 
 		private void SetPinState(bool state){

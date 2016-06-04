@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("3DScannerProgram")]
+[assembly: AssemblyTitle("benzi-fotorezistor")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("3DScannerProgram")]
+[assembly: AssemblyProduct("benzi-fotorezistor")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("31c8c0d4-0da1-48f3-aa55-4bb6e5cb2a1f")]
+[assembly: Guid("87b72157-42aa-49af-a0e6-072e7832da17")]
 
 // Version information for an assembly consists of the following four values:
 //
