@@ -1,49 +1,29 @@
 ﻿using System;
-using System.Threading;
-using RaspberryPiDotNet;
+using TDR.ChatLibrary.Client;
 
-namespace csTest
+namespace _3DScannerProgram
 {
 	class MainClass
 	{
 		public static void Main (string[] args)
 		{
-		    int high, period;
-            high = 4;
-		    period = 10;
-		    if (args.Length == 2)
+		    var delayBetweenScans = 0;
+            var high = 4;
+		    var period = 10;
+		    if (args.Length >= 2)
 		    {
 		        period = int.Parse(args[0]);
 		        high = int.Parse(args[1]);
 		    }
-		    var rm = new RaspberryMaster(period, high, 4);
-            rm.Start();
-            var working = true;
-		    while (working)
+		    if (args.Length == 3)
 		    {
-                Console.WriteLine("Type something:");
-		        var line = Console.ReadLine();
-		        switch (line.ToLower())
-		        {
-                    case "exit":
-                        rm.Stop();
-		                working = false;
-                        break;
-                    case "stop":
-                        rm.Stop();
-                        break;
-                    case "start":
-                        rm.Start();
-                        break;
-                    case "startpwm":
-                    case "s":
-                        rm.StartPWM();
-                        break;
-                    default:
-                        Console.WriteLine("You wrote: '" + line + "'");
-                        break;
-		        }
+		        delayBetweenScans = int.Parse(args[2]);
 		    }
+
+		    var pi = new Raspberry(period, high, delayBetweenScans, 4);
+            pi.Job();
+
+           
             Console.WriteLine("program ended");
 		}
         

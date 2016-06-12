@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Threading;
 using RaspberryPiDotNet;
-namespace csTest
+
+namespace _3DScannerProgram
 {
 	public class PWMHelper
 	{
@@ -18,12 +18,18 @@ namespace csTest
 		public PWMHelper (GPIOPins pin, int period, int highDuration)
 		{
 			Pin = pin;
-			if (highDuration > period) {
-				throw new Exception ("highDuration > Period");
-			}
-			HighDuration = highDuration;
-			Period = period;
+		    SetValues(period, highDuration);
 		}
+
+	    public void SetValues(int period, int highDuration)
+        {
+            if (highDuration > period)
+            {
+                throw new Exception("highDuration > Period");
+            }
+            HighDuration = highDuration;
+            Period = period;
+        }
 
 		public bool Start()
 		{
