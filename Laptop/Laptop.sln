@@ -5,13 +5,13 @@ VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Laptop", "Laptop\Laptop.csproj", "{AB0A7D13-1B18-4C30-A3A9-C2E64E759F19}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KinectFusionExplorer-WPF", "Kinect\KinectFusionExplorer-WPF\KinectFusionExplorer-WPF.csproj", "{DA2823B5-7BD6-4C8F-9B08-7FABD49B7012}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KinectFusionExplorer-WPF", "KinectProjects\KinectFusionExplorer-WPF\KinectFusionExplorer-WPF.csproj", "{DA2823B5-7BD6-4C8F-9B08-7FABD49B7012}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Kinect.Toolkit", "Kinect\Microsoft.Kinect.Toolkit\Microsoft.Kinect.Toolkit.csproj", "{C6F9C31B-6130-4443-A5CC-EF0664552ECD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Kinect.Toolkit", "KinectProjects\Microsoft.Kinect.Toolkit\Microsoft.Kinect.Toolkit.csproj", "{C6F9C31B-6130-4443-A5CC-EF0664552ECD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Kinect.Toolkit.Fusion", "Kinect\Microsoft.Kinect.Toolkit.Fusion\Microsoft.Kinect.Toolkit.Fusion.csproj", "{58851747-F078-44E1-94B0-99EF065B3319}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Kinect.Toolkit.Fusion", "KinectProjects\Microsoft.Kinect.Toolkit.Fusion\Microsoft.Kinect.Toolkit.Fusion.csproj", "{58851747-F078-44E1-94B0-99EF065B3319}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Kinect", "Kinect", "{726FFBC1-0E6B-48C4-9E0D-503829F99155}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "KinectProjects", "KinectProjects", "{726FFBC1-0E6B-48C4-9E0D-503829F99155}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
