@@ -41,6 +41,15 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="TDR.ChatLibrary">
+      <HintPath>..\..\..\TDR.TCP\TDR.TCP\build\TDR.ChatLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="TDR.Logger">
+      <HintPath>..\..\..\TDR.TCP\TDR.TCP\build\TDR.Logger.dll</HintPath>
+    </Reference>
+    <Reference Include="TDR.Models">
+      <HintPath>..\..\..\TDR.TCP\TDR.TCP\build\TDR.Models.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
