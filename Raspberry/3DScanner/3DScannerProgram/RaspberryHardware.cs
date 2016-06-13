@@ -42,11 +42,12 @@ namespace _3DScannerProgram
             _fotoResistorListener.StateChanged += PinStateChangedHandler;
 		}
 
-		private void PinStateChangedHandler(PinStateListener sender, PinStateChangedEventArgs e) {
-			//if (e.NewValue == PinState.High) {
-				CounterChanged ();
+		private void PinStateChangedHandler(PinStateListener sender, PinStateChangedEventArgs e)
+        {
+            Console.WriteLine("FotoResistor Value: " + e.NewValue);
+            //if (e.NewValue == PinState.High) {
+            CounterChanged ();
 			//}
-		    Console.WriteLine("FotoResistor Value: " + e.NewValue);
 		}
 
 		private void CounterChanged()

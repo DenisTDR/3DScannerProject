@@ -120,7 +120,7 @@ namespace _3DScannerProgram
             _chat.SendMessage(new ChatMessage()
             {
                 MessageBody = "Angle Completed!",
-                Recipient = new UserViewModel() {Username = "tdr", Nick = "TDR"}
+                Recipient = new UserViewModel() {Username = "kinect", Nick = "TDR"}
             });
         }
     }

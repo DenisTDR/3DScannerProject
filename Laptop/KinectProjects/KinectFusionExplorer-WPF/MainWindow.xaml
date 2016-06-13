@@ -282,9 +282,9 @@
                         <Button Style="{StaticResource MeshButton}" Content="Create Mesh" Margin="10 10 5 0" Click="CreateMeshButtonClick" AutomationProperties.AutomationId="CreateMesh"/>
 
                         <StackPanel Orientation="Horizontal" Margin="0 -3 0 0">
-                            <RadioButton Name="stlFormat" Style="{StaticResource KinectRadioButton}" Content="STL" Margin="30 5 0 0" IsChecked="True" AutomationProperties.AutomationId="STLFormat"/>
+                            <RadioButton Name="stlFormat" Style="{StaticResource KinectRadioButton}" Content="STL" Margin="30 5 0 0" AutomationProperties.AutomationId="STLFormat"/>
                             <RadioButton Name="objFormat" Style="{StaticResource KinectRadioButton}" Content="OBJ" Margin="5 5 0 0" AutomationProperties.AutomationId="OBJFormat"/>
-                            <RadioButton Name="plyFormat" Style="{StaticResource KinectRadioButton}" Content="PLY" Margin="5 5 5 0" AutomationProperties.AutomationId="PLYFormat"/>
+                            <RadioButton Name="plyFormat" Style="{StaticResource KinectRadioButton}" Content="PLY" Margin="5 5 5 0"  IsChecked="True" AutomationProperties.AutomationId="PLYFormat"/>
                         </StackPanel>
 
                         <Button Margin="10 20 5 0" Style="{StaticResource ResetButton}" Content="Reset Reconstruction" Click="ResetReconstructionButtonClick" AutomationProperties.AutomationId="ResetReconstruction"/>

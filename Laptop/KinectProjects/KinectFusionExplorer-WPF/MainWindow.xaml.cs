@@ -650,7 +650,7 @@ namespace Microsoft.Samples.Kinect.KinectFusionExplorer
         /// <summary>
         /// Flag to signal to worker thread to reset the reconstruction
         /// </summary>
-        private bool resetReconstruction = false;
+        private bool resetReconstructionFlag = false;
 
         /// <summary>
         /// Flag to signal to worker thread to re-create the reconstruction
@@ -879,7 +879,7 @@ namespace Microsoft.Samples.Kinect.KinectFusionExplorer
                     this.PropertyChanged.Invoke(this, new PropertyChangedEventArgs("MirrorDepth"));
                 }
 
-                this.resetReconstruction = true;
+                this.resetReconstructionFlag = true;
             }
         }
 
@@ -1384,6 +1384,8 @@ namespace Microsoft.Samples.Kinect.KinectFusionExplorer
             this.statusBarTimer.Tick += this.StatusBarTimerTick;
             this.statusBarTimer.Start();
 
+            this.MaxDepthClip = 0.9;
+
             this.lastStatusTimestamp = DateTime.Now;
         }
 
@@ -1764,9 +1766,9 @@ namespace Microsoft.Samples.Kinect.KinectFusionExplorer
                 }
             }
 
-            if (this.resetReconstruction)
+            if (this.resetReconstructionFlag)
             {
-                this.resetReconstruction = false;
+                this.resetReconstructionFlag = false;
                 this.ResetReconstruction();
             }
 
@@ -2861,7 +2863,7 @@ namespace Microsoft.Samples.Kinect.KinectFusionExplorer
                 if (skippedMilliseconds >= timeThreshold)
                 {
                     this.ShowStatusMessage(Properties.Resources.ResetVolume);
-                    this.resetReconstruction = true;
+                    this.resetReconstructionFlag = true;
                 }
             }
 
@@ -3059,10 +3061,22 @@ namespace Microsoft.Samples.Kinect.KinectFusionExplorer
             }
 
             // Signal the worker thread to reset the volume
-            this.resetReconstruction = true;
+            this.resetReconstructionFlag = true;
 
             // Update manual reset information to status bar
             this.ShowStatusMessage(Properties.Resources.ResetVolume);
+        }
+
+        public void DoResetReconstruction()
+        {
+            if (null == this.sensor)
+            {
+                return;
+            }
+
+            // Signal the worker thread to reset the volume
+            this.resetReconstructionFlag = true;
+            
         }
 
         /// <summary>
@@ -3175,6 +3189,72 @@ namespace Microsoft.Samples.Kinect.KinectFusionExplorer
 
                 this.savingMesh = false;
             }
+        }
+
+
+        public bool SaveToPlyFile(string path)
+        {
+            Console.WriteLine("saving ply to " + path);
+            // Mark the start time of saving mesh
+            DateTime beginning = DateTime.UtcNow;
+
+            try
+            {
+
+
+                ColorMesh mesh = null;
+
+                lock (this.volumeLock)
+                {
+                    this.savingMesh = true;
+
+                    if (null == this.volume)
+                    {
+                        return false;
+                    }
+
+                    mesh = this.volume.CalculateMesh(1);
+                }
+
+                if (null == mesh)
+                {
+                    return false;
+                }
+
+                using (StreamWriter writer = new StreamWriter(path))
+                {
+                    // Default to flip Y,Z coordinates on save
+                    Helper.SaveAsciiPlyMesh(mesh, writer, true, this.colorCaptured);
+                }
+
+
+            }
+            catch (ArgumentException)
+            {
+                //this.ShowStatusMessage(Properties.Resources.ErrorSaveMesh);
+            }
+            catch (InvalidOperationException)
+            {
+                //this.ShowStatusMessage(Properties.Resources.ErrorSaveMesh);
+            }
+            catch (IOException)
+            {
+                //this.ShowStatusMessage(Properties.Resources.ErrorSaveMesh);
+            }
+            catch (OutOfMemoryException)
+            {
+                //this.ShowStatusMessage(Properties.Resources.ErrorSaveMeshOutOfMemory);
+            }
+            finally
+            {
+                // Update timestamp of last frame to avoid auto reset reconstruction
+                this.lastFrameTimestamp += (long) (DateTime.UtcNow - beginning).TotalMilliseconds;
+
+                this.savingMesh = false;
+            }
+            Console.WriteLine("saved");
+            return true;
+
         }
 
         /// <summary>
