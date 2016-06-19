@@ -20,8 +20,9 @@ namespace Microsoft.Samples.Kinect.KinectFusionExplorer
                 _mainWindow = mw;
                 mw.Closed += (sender, e) =>
                 {
-                    ss.Release();
+                    Console.WriteLine("MainWindow Closed!");
                     alreadyClosed = true;
+                    ss.Release();
                 };
                 mw.ShowDialog();
             });
@@ -43,6 +44,7 @@ namespace Microsoft.Samples.Kinect.KinectFusionExplorer
 
         public void Kill()
         {
+            if (alreadyClosed) return;
             _mainWindow.Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(() =>
             {
                 _mainWindow.Close();
@@ -51,8 +53,8 @@ namespace Microsoft.Samples.Kinect.KinectFusionExplorer
 
         public void WaitUntilClose()
         {
-            if (alreadyClosed) return;
-            ss.Wait();
+            if (!alreadyClosed)
+                ss.Wait();
         }
     }
 }

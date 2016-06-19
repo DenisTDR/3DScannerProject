@@ -125,6 +125,11 @@ namespace KinectLibrary._3D
             return line;
         }
 
+        public void LoadFromObject3D(Object3D obj)
+        {
+            this.pointList = obj.pointList;
+            this.faceList = obj.faceList;
+        }
 
     }
 }

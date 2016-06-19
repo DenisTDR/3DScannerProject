@@ -11,7 +11,8 @@ namespace KinectLibrary._3D
         public List<Face> faceList { get; set; }
         private Point3D centerOfGravity;
         private double limit = 0.5;
-
+        public bool SkipCheckPoint { get; set; }
+        public bool SkipCheckNearCOG { get; set; }
 
         public Object3D(List<Point3D> pL, List<Face> fL, Point3D COG, double lim = 0.5)
         {
@@ -33,8 +34,10 @@ namespace KinectLibrary._3D
         public void addPointsToObject(List<Point3D> pL, List<Face> fL)
         {
             bool selected = true;
+            var c = 0;
             while (selected)
             {
+                c++;
                 selected = false;
                 for (int  i = 0; i < pL.Count(); i++)
                 {
@@ -43,7 +46,6 @@ namespace KinectLibrary._3D
                         selected = true;
                         pL.Remove(pL[i]);
                     }
-        
                 }
             }
 
@@ -78,9 +80,14 @@ namespace KinectLibrary._3D
             return centerOfGravity;
         }
 
+        public void setCOG(Point3D cog)
+        {
+            centerOfGravity = cog;
+        }
+
         public bool addPointToObject(Point3D point)
         {
-            if (verifyPoint(point))
+            if (SkipCheckPoint || verifyPoint(point))
             {
                 upDateCOG(point);
                 pointList.Add(point);
@@ -92,9 +99,8 @@ namespace KinectLibrary._3D
 
         private bool verifyPoint(Point3D point)
         {
-            return point.DistanceTo(centerOfGravity) <= limit
-                && point.Y > -0.08206382;
-            
+            return (SkipCheckNearCOG || point.DistanceTo(centerOfGravity) <= limit)
+                && point.Y > Variables.MinHeight;
         }
 
         public void upDateCOG(Point3D point)
@@ -147,6 +153,7 @@ namespace KinectLibrary._3D
 
         public void MakeRotateAndSaveObject(PlyParser parser, Point3D center, double angle)
         {
+            this.setCOG(parser.pointList[0]);
             Console.WriteLine("adding points");
             this.addPointsToObject(parser.pointList, parser.faceList);
             Console.WriteLine("rotating obj");
@@ -156,6 +163,82 @@ namespace KinectLibrary._3D
             Console.WriteLine("saving st");
             parser.Save();
             Console.WriteLine("saved st");
+        }
+
+        public void IgnoreLowerPoints(string filePath, bool saveBack = false)
+        {
+
+            var parser = new PlyParser();
+            Console.WriteLine("reading from file");
+            parser.Read(filePath);
+            this.pointList = new List<Point3D>();
+            this.faceList = new List<Face>();
+            Console.WriteLine("read. processing object");
+
+            this.setCOG(parser.pointList[0]);
+            this.SkipCheckNearCOG = true;
+            this.addPointsToObject(parser.pointList, parser.faceList);
+
+
+            parser.pointList.Clear();
+            parser.faceList.Clear();
+            if (saveBack)
+            {
+
+                Console.WriteLine("processed. saving to file");
+                parser.LoadFromObject3D(this);
+
+                parser.Write(filePath.Replace(".ply", "_ok.ply"));
+                Console.WriteLine("saved");
+                parser.pointList.Clear();
+                parser.faceList.Clear();
+            }
+            Console.WriteLine("done ignoring lower points!");
+        }
+
+        public Point3D getMaxHeight(string filePath)
+        {
+            var parser = new PlyParser();
+            Console.WriteLine("reading from file");
+            parser.Read(filePath);
+            parser.faceList.Clear();
+            var maxHeightPoint = new Point3D(0, -100, 0);
+
+            foreach (var point3D in parser.pointList)
+            {
+                if (point3D.Y > maxHeightPoint.Y)
+                {
+                    maxHeightPoint = point3D;
+                }
+            }
+
+            parser.pointList.Clear();
+            Variables.MinHeight = maxHeightPoint.Y;
+            return maxHeightPoint;
+        }
+
+        public Point3D RecalculateCenter()
+        {
+            var tmpCog = new Point3D(0, 0, 0);
+            foreach (var point3D in pointList)
+            {
+                tmpCog.X += point3D.X/pointList.Count;
+                tmpCog.Z += point3D.Z/pointList.Count;
+            }
+            Variables.Center = tmpCog;
+            return tmpCog;
+        }
+
+        public void LoadFromParser(PlyParser parser)
+        {
+            this.pointList = parser.pointList;
+            this.faceList = parser.faceList;
+        }
+
+        public void Dispose()
+        {
+            this.pointList.Clear();
+            this.faceList.Clear();
         }
     }
 }

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using KinectLibrary;
+using KinectLibrary._3D;
 
 namespace Laptop
 {
@@ -13,7 +15,8 @@ namespace Laptop
         [STAThread]
         static void Main(string[] args)
         {
-
+            //new Object3D().IgnoreLowerPoints(@"D:\Projects\OC\test\MeshedReconstruction.ply");
+            //return;
             bool a = true;
             if (a)
             {
@@ -34,12 +37,15 @@ namespace Laptop
             var cnt = 0;
             while (working)
             {
-                Console.WriteLine(":");
+                Console.WriteLine("&:");
                 var line = Console.ReadLine();
+                if (string.IsNullOrEmpty(line))
+                {
+                    continue;
+                }
                 switch (line)
                 {
                     case "exit":
-
                         Console.WriteLine("closing kinect");
                         kinect.Stop();
                         kinect.WaitUntilClose();
@@ -54,11 +60,13 @@ namespace Laptop
                         cnt++;
                         break;
                     default:
+                        kinect.ProcessMessage(line);
                         break;
                 }
             }
             Console.WriteLine("loop end");
             
         }
+        
     }
 }

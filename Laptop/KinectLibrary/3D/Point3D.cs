@@ -77,7 +77,7 @@ namespace KinectLibrary._3D
 
         public override string ToString()
         {
-            return $"{(float)this.X} {(float)this.Y} {(float)this.Z}";
+            return $"({(float)this.X} {(float)this.Y} {(float)this.Z})";
         }
         public string ToPlyFormat()
         {
