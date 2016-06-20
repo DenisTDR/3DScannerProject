@@ -109,7 +109,7 @@ namespace KinectLibrary._3D
 
         public void Save()
         {
-            var path = Path.Combine(Path.GetDirectoryName(file), Path.GetFileNameWithoutExtension(file)) + "-ok.ply";
+            var path = Path.Combine(Path.GetDirectoryName(file), Path.GetFileNameWithoutExtension(file)) + "-rotated.ply";
             this.Write(path);
         }
 

@@ -1282,6 +1282,7 @@ namespace Microsoft.Samples.Kinect.KinectFusionExplorer
         /// <param name="e">event arguments</param>
         private void WindowLoaded(object sender, RoutedEventArgs e)
         {
+            this.Top = 10;
             int deviceMemoryKB = 0;
 
             // Check to ensure suitable DirectX11 compatible hardware exists before initializing Kinect Fusion
@@ -1385,6 +1386,7 @@ namespace Microsoft.Samples.Kinect.KinectFusionExplorer
             this.statusBarTimer.Start();
 
             this.MaxDepthClip = 0.9;
+            this.CaptureColor = true;
 
             this.lastStatusTimestamp = DateTime.Now;
         }

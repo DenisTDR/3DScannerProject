@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using KinectLibrary;
 using KinectLibrary._3D;
@@ -15,8 +16,10 @@ namespace Laptop
         [STAThread]
         static void Main(string[] args)
         {
+            CheckAndCopyKinectFusionSDKLibrary();
             //new Object3D().IgnoreLowerPoints(@"D:\Projects\OC\test\MeshedReconstruction.ply");
             //return;
+
             bool a = true;
             if (a)
             {
@@ -31,7 +34,7 @@ namespace Laptop
             }
         }
 
-        static void Loop()
+        private static async void Loop()
         {
             var working = true;
             var cnt = 0;
@@ -55,18 +58,25 @@ namespace Laptop
                     case "reset":
                         kinect.Reset();
                         break;
-                    case "save":
-                        kinect.SaveToPlyFile(@"D:\Projects\OC\test\test-" + cnt + ".ply");
-                        cnt++;
-                        break;
+
                     default:
-                        kinect.ProcessMessage(line);
+                        await kinect.ProcessMessage(line);
                         break;
                 }
             }
             Console.WriteLine("loop end");
             
         }
-        
+
+        static void CheckAndCopyKinectFusionSDKLibrary()
+        {
+            if (!File.Exists("KinectFusion180_64.dll") || !File.Exists("KinectFusion180_32.dll"))
+            {
+                Console.WriteLine("Copying kinect fussion libraries.");
+                File.Copy("../KinectFusion180_32.dll", "KinectFusion180_32.dll", true);
+                File.Copy("../KinectFusion180_64.dll", "KinectFusion180_64.dll", true);
+                Console.WriteLine("copied.");
+            }
+        }
     }
 }

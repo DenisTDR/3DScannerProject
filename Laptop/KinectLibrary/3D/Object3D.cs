@@ -11,7 +11,7 @@ namespace KinectLibrary._3D
         public List<Face> faceList { get; set; }
         private Point3D centerOfGravity;
         private double limit = 0.5;
-        public bool SkipCheckPoint { get; set; }
+        public bool SkipCheckMinHeight { get; set; }
         public bool SkipCheckNearCOG { get; set; }
 
         public Object3D(List<Point3D> pL, List<Face> fL, Point3D COG, double lim = 0.5)
@@ -29,6 +29,12 @@ namespace KinectLibrary._3D
         {
             pointList = new List<Point3D>();
             faceList = new List<Face>();
+        }
+        public Object3D(string path)
+        {
+            var parser = new PlyParser();
+            parser.Read(path);
+            this.LoadFromParser(parser);
         }
 
         public void addPointsToObject(List<Point3D> pL, List<Face> fL)
@@ -87,7 +93,7 @@ namespace KinectLibrary._3D
 
         public bool addPointToObject(Point3D point)
         {
-            if (SkipCheckPoint || verifyPoint(point))
+            if (verifyPoint(point))
             {
                 upDateCOG(point);
                 pointList.Add(point);
@@ -100,7 +106,7 @@ namespace KinectLibrary._3D
         private bool verifyPoint(Point3D point)
         {
             return (SkipCheckNearCOG || point.DistanceTo(centerOfGravity) <= limit)
-                && point.Y > Variables.MinHeight;
+                   && (SkipCheckMinHeight || point.Y > Variables.MinHeight);
         }
 
         public void upDateCOG(Point3D point)
@@ -153,6 +159,8 @@ namespace KinectLibrary._3D
 
         public void MakeRotateAndSaveObject(PlyParser parser, Point3D center, double angle)
         {
+            this.SkipCheckMinHeight = false;
+            this.SkipCheckNearCOG = true;
             this.setCOG(parser.pointList[0]);
             Console.WriteLine("adding points");
             this.addPointsToObject(parser.pointList, parser.faceList);
@@ -229,10 +237,12 @@ namespace KinectLibrary._3D
             return tmpCog;
         }
 
+        public PlyParser LastUsedParser { get; private set; }
         public void LoadFromParser(PlyParser parser)
         {
             this.pointList = parser.pointList;
             this.faceList = parser.faceList;
+            LastUsedParser = parser;
         }
 
         public void Dispose()

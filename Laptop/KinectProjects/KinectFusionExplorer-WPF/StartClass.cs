@@ -14,21 +14,24 @@ namespace Microsoft.Samples.Kinect.KinectFusionExplorer
         private MainWindow _mainWindow;
         public void OpenWindow()
         {
+            if(_mainWindow != null)
+                return;
+            alreadyClosed = false;
             var thread = new Thread(() =>
             {
-                var mw = new MainWindow();
-                _mainWindow = mw;
-                mw.Closed += (sender, e) =>
+                _mainWindow = new MainWindow();
+                _mainWindow.Closed += (sender, e) =>
                 {
                     Console.WriteLine("MainWindow Closed!");
                     alreadyClosed = true;
                     ss.Release();
                 };
-                mw.ShowDialog();
+                _mainWindow.ShowDialog();
+                _mainWindow = null;
             });
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
-//            mw.Show();
+
         }
 
 
@@ -39,6 +42,7 @@ namespace Microsoft.Samples.Kinect.KinectFusionExplorer
 
         public void Reset()
         {
+            Console.WriteLine("Reset reconstruction!");
             _mainWindow.DoResetReconstruction();
         }
 
