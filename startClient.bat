@@ -1,0 +1,1 @@
+D:\Projects\OC\GIT\TDR.TCP\TDR.TCP\build\TDR.TCPClient.exe kinect parola01 raspberry
