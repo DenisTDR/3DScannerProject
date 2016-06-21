@@ -18,19 +18,17 @@ namespace _3DScannerProgram
 	    private int _counter;
 
 	    private bool _init = false;
-	    private int _delayBetweenScans;
 
-	    public RaspberryHardware(int pwmPeriod, int pwmHigh, int counterLimit, int delayBetweenScans = 0)
+	    public RaspberryHardware(int pwmPeriod, int pwmHigh, int counterLimit)
 	    {
-	        SetVariables(pwmPeriod, pwmHigh, counterLimit, delayBetweenScans);
+	        SetVariables(pwmPeriod, pwmHigh, counterLimit);
 	    }
 
-	    public void SetVariables(int pwmPeriod, int pwmHigh, int counterLimit, int delayBetweenScans = 0)
+	    public void SetVariables(int pwmPeriod, int pwmHigh, int counterLimit)
         {
             _pwmPeriod = pwmPeriod;
             _pwmHigh = pwmHigh;
             _counterLimit = counterLimit;
-            _delayBetweenScans = delayBetweenScans;
         }
 
 		private void Init()
@@ -58,16 +56,7 @@ namespace _3DScannerProgram
                 _pwmHelper.Stop();
                 CompletedAngle?.Invoke(this, _counter);
                 _counter = 0;
-                Console.WriteLine("stopped 1");
-			    if (_delayBetweenScans != 0)
-			    {
-			        Task.Run(async () =>
-			        {
-			            await Task.Delay(_delayBetweenScans);
-			            Console.WriteLine("started");
-			            this.Start();
-			        });
-			    }
+			   
 			}
 		}
 
@@ -80,7 +69,7 @@ namespace _3DScannerProgram
 	    {
             Init();
             _fotoResistorListener.Start();
-            _pwmHelper.Start();
+           // _pwmHelper.Start();
         }
 
 	    public void Stop()

@@ -21,14 +21,14 @@ namespace KinectLibrary
     {
         private StartClass _sc;
         private ChatClient _chat;
-        private int cnt = 0;
-
+        private int crtStep = 0;
+        private int steps = 5;
+        private bool killed = false;
         
         public Kinect()
         {
-            LoggerHandler.Init(new[] {(Action<string>) Console.WriteLine}, "" /*GetAvailableLogFilename(logFilePath)*/,
-                minLogLevel: LogLevel.Warn);
-            _chat = new ChatClient("192.169.0.123", 10240, "kinect", "parola01");
+  
+            _chat = new ChatClient(Variables.TcpServerIp, 10240, "kinect", "parola01");
             _chat.MessageReceived += _chat_MessageReceived;
             _chat.ErrorReceived += _chat_ErrorReceived;
         }
@@ -41,17 +41,17 @@ namespace KinectLibrary
                 case "scan":
                     Console.WriteLine("Begin scanning object!");
                     ResetStateVars();
-                    cnt = 0;
+                    crtStep = 0;
                     await ProcessMessage("angle done");
                     break;
                 case "angle done":
                 case "Angle Completed!":
-                    if (cnt > 10)
+                    if (crtStep > steps - 1)
                     {
                         Console.WriteLine("done scanning");
                         break;
                     }
-                    if (cnt == 1)
+                    if (crtStep == 1)
                     {
                         new Thread(BuildFinalObject).Start();
                     }
@@ -64,9 +64,9 @@ namespace KinectLibrary
                         Recipient = new UserViewModel{ Username = "raspberry" }
                     });
                     
-                    StartThreadToRotate(cnt);
+                    StartThreadToRotate(crtStep);
   
-                    cnt ++;
+                    crtStep ++;
                     break;
                 case "S":
                 case "save":
@@ -76,7 +76,7 @@ namespace KinectLibrary
                     break;
                 case "R":
                 case "rotate":
-                    this.StartThreadToRotate(cnt);
+                    this.StartThreadToRotate(crtStep);
                     break;
                 case "SR":
                     await ProcessMessage("S");
@@ -102,7 +102,7 @@ namespace KinectLibrary
                     this.OpenWindow();
                     break;
                 case "reset counter":
-                    cnt = 0;
+                    crtStep = 0;
                     break;
                 case "open result":
                     if (!string.IsNullOrEmpty(resultPath) && File.Exists(resultPath))
@@ -126,7 +126,7 @@ namespace KinectLibrary
         private static string tmpPath = @"D:\Projects\OC\tmp\crtBuild";
         private void SaveCurrentObject()
         {
-            _sc.SaveToFile(tmpPath + @"\part-" + cnt + ".ply");
+            _sc.SaveToFile(tmpPath + @"\part-" + crtStep + ".ply");
         }
 
         private List<bool> rotatedParts;
@@ -153,7 +153,7 @@ namespace KinectLibrary
                     Console.WriteLine("making st");
                     new Object3D().MakeRotateAndSaveObject(parser,
                         Variables.Center,
-                        36*crtThreadCnt);
+                        360/steps*crtThreadCnt);
                 }
                 else
                 {
@@ -182,6 +182,7 @@ namespace KinectLibrary
 
         public void Stop()
         {
+            killed = true;
             _chat.Disconnect();
             _sc.Kill();
         }
@@ -268,10 +269,10 @@ namespace KinectLibrary
             var done = new List<bool>(new bool[11]);
             var tmpFinalPath = tmpPath + "/tmp.ply";
             File.Copy(tmpPath + "/proto.ply", tmpFinalPath);
-            while (done.Count(x => x) < 10)
+            while (done.Count(x => x) < steps)
             {
                 var stdone = false;
-                for (var i = 0; i < cnt - 1; i++)
+                for (var i = 0; i < crtStep; i++)
                 {
                     if(done[i] || !rotatedParts[i])
                         continue;
@@ -283,8 +284,10 @@ namespace KinectLibrary
                 if (!stdone)
                 {
                     Thread.Sleep(1000);
+
                     Console.WriteLine("Waiting for object parts to be rotated");
                 }
+                if (killed) return;
             }
             resultPath = tmpPath + "/result.ply";
             File.Move(tmpFinalPath, resultPath);
@@ -298,6 +301,13 @@ namespace KinectLibrary
             semaphoreRotateParts?.Release(100);
             semaphoreRotateParts = new SemaphoreSlim(4, 150);
             rotatedParts = new List<bool>(new bool[11]);
+
+            _chat.SendMessage(new ChatMessage
+            {
+                MessageBody = "setnroflines " + (360/9/steps),
+                Recipient = new UserViewModel {Username = "raspberry"}
+            });
+
             foreach (var file in Directory.GetFiles(tmpPath))
             {
                 if (file.EndsWith(".ply") && !file.Contains("proto.ply"))

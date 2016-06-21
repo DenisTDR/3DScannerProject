@@ -15,12 +15,8 @@ namespace _3DScannerProgram
 		        period = int.Parse(args[0]);
 		        high = int.Parse(args[1]);
 		    }
-		    if (args.Length == 3)
-		    {
-		        delayBetweenScans = int.Parse(args[2]);
-		    }
 
-		    var pi = new Raspberry(period, high, delayBetweenScans, 4);
+		    var pi = new Raspberry();
             pi.Job();
 
            

@@ -39,24 +39,16 @@ namespace KinectLibrary._3D
 
         public void addPointsToObject(List<Point3D> pL, List<Face> fL)
         {
-            bool selected = true;
-            var c = 0;
-            while (selected)
+            for (int i = 0; i < pL.Count(); i++)
             {
-                c++;
-                selected = false;
-                for (int  i = 0; i < pL.Count(); i++)
+                if (addPointToObject(pL[i]))
                 {
-                    if (addPointToObject(pL[i]))
-                    {
-                        selected = true;
-                        pL.Remove(pL[i]);
-                    }
+                    //pL.Remove(pL[i]);
                 }
             }
+            bool selected;
 
-
-            for (int i = 0; i < fL.Count(); i++)
+            for (int i = 0; i < fL.Count; i++)
             {
                 selected = true;
                 foreach (Point3D point in fL[i].Points)
@@ -95,7 +87,7 @@ namespace KinectLibrary._3D
         {
             if (verifyPoint(point))
             {
-                upDateCOG(point);
+                //upDateCOG(point);
                 pointList.Add(point);
 
                 return true;

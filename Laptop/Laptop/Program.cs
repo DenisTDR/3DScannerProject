@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using KinectLibrary;
 using KinectLibrary._3D;
+using TDR.Logging;
 
 namespace Laptop
 {
@@ -16,6 +17,8 @@ namespace Laptop
         [STAThread]
         static void Main(string[] args)
         {
+            LoggerHandler.Init(new[] {(Action<string>) Console.WriteLine}, "" /*GetAvailableLogFilename(logFilePath)*/,
+                minLogLevel: LogLevel.Warn);
             CheckAndCopyKinectFusionSDKLibrary();
             //new Object3D().IgnoreLowerPoints(@"D:\Projects\OC\test\MeshedReconstruction.ply");
             //return;
